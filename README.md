@@ -74,7 +74,7 @@ app/
 
 ### 2. Clonar el Repositorio
 ```bash
-git clone https://github.com/DenovanMonroy/minesweeper.git
+git clone https://github.com/DenovanMonroy/Buscaminas.git
 cd minesweeper
 ```
 
