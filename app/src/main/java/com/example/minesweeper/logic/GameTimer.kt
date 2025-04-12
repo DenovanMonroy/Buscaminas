@@ -6,11 +6,13 @@ import androidx.compose.runtime.setValue
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.cancel
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import java.util.Date
 
-class GameTimer(private val initialTimeElapsed: Long = 0) {
+class GameTimer(initialTimeElapsed: Long = 0) {
 
     var timeElapsed by mutableStateOf(initialTimeElapsed)
         private set
@@ -24,9 +26,9 @@ class GameTimer(private val initialTimeElapsed: Long = 0) {
 
         startTime = System.currentTimeMillis() - timeElapsed
         timerJob = scope.launch {
-            while (true) {
+            while (isActive) {
                 timeElapsed = System.currentTimeMillis() - startTime
-                delay(1000) // Update every second
+                delay(100) // Actualizar más frecuentemente para mayor precisión
             }
         }
     }

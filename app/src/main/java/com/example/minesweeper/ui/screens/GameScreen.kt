@@ -60,8 +60,8 @@ import com.example.minesweeper.logic.GameLogic
 import com.example.minesweeper.logic.GameTimer
 import com.example.minesweeper.persistence.GameRepository
 import com.example.minesweeper.persistence.StorageUtils
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import org.chromium.base.Flag
 import kotlin.math.min
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -87,6 +87,24 @@ fun GameScreen(
     // Game timer
     val gameTimer = remember(gameState?.id) {
         GameTimer(gameState?.timeElapsed ?: 0)
+    }
+
+    // Actualizar tiempo periódicamente mientras el juego está en curso
+    LaunchedEffect(gameState?.id) {
+        if (gameState?.status == GameStatus.ONGOING) {
+            gameTimer.start()
+            while (gameState?.status == GameStatus.ONGOING) {
+                delay(1000) // Actualizar cada segundo
+                gameState = gameState?.copy(timeElapsed = gameTimer.timeElapsed)
+            }
+        }
+    }
+
+    // Efecto para detener el timer cuando el juego no está en curso
+    LaunchedEffect(gameState?.status) {
+        if (gameState?.status != GameStatus.ONGOING) {
+            gameTimer.pause()
+        }
     }
 
     // Effect to load existing game

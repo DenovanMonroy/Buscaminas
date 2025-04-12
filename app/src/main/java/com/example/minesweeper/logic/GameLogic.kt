@@ -64,13 +64,13 @@ class GameLogic {
         val allNonMineRevealed = newBoard.flatten().all { it.hasMine || it.isRevealed }
         val newStatus = if (allNonMineRevealed) GameStatus.WON else gameState.status
 
-        // Calculate score
+        // Calculate score for each move, not just on win
         val revealedCells = newBoard.flatten().count { it.isRevealed && !it.hasMine }
         val totalNonMineCells = newBoard.flatten().count { !it.hasMine }
         val timeElapsed = Date().time - (gameState.startTime?.time ?: Date().time)
 
-        val score = if (newStatus == GameStatus.WON) {
-            ScoreSystem.calculateScore(
+        val progressScore = if (newStatus != GameStatus.LOST) {
+            ScoreSystem.calculateProgressiveScore(
                 timeElapsed,
                 gameState.difficulty,
                 revealedCells,
@@ -81,7 +81,7 @@ class GameLogic {
         return gameState.copy(
             board = newBoard,
             status = newStatus,
-            score = score,
+            score = progressScore,
             timeElapsed = timeElapsed
         )
     }
